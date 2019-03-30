@@ -1,4 +1,4 @@
-package xml_node
+package node
 
 import (
 	"encoding/xml"
@@ -47,9 +47,9 @@ func Parse(r io.Reader) (*NodeXml, error) {
 		case xml.CharData:
 			ns.addValue(t)
 		}
-		if ns == nil || ns.nodes == nil && len(ns.nodes) == 0 {
-			return nil, errors.New("Не удалось обработать документ. Возможно структура файла не является корректным Xml документом")
-		}
+	}
+	if ns == nil || ns.nodes == nil && len(ns.nodes) == 0 {
+		return nil, errors.New("Не удалось обработать документ. Возможно структура файла не является корректным Xml документом")
 	}
 	return ns.nodes[0], nil
 }
