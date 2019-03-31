@@ -38,7 +38,7 @@ func goNode(n *node.NodeXml) string {
 }
 
 func getNameStruct(n *node.NodeXml) string {
-	return fmt.Sprintf(`type %v struct {`, engine.GetCamelCase(n.Namespace)) + "\n\t" +
+	return fmt.Sprintf("\n"+`type %v struct {`, engine.GetCamelCase(n.Namespace)) + "\n\t" +
 		fmt.Sprintf(`XMLName xml.Name %vxml:"%v"%v`+"\n", a, n.Namespace, a)
 }
 
