@@ -21,16 +21,22 @@ func CreateStruct(n *node.NodeXml) (*os.File, error) {
 }
 
 func goNode(n *node.NodeXml) string {
-	if n == nil || n.Childern == nil || len(n.Childern) <= 0 {
+	if n == nil { //|| n.Childern == nil || len(n.Childern) <= 0 {
 		return ""
 	}
 	if mapList[n.Namespace] {
 		return ""
 	}
+	//if n.Namespace == "city" {
+	//	fmt.Println(n)
+	//}
 	mapList[n.Namespace] = true
 	temp := getNameStruct(n)
 	temp += goAttribute(n)
-	temp += goChildern(n.Childern)
+	if n.Childern != nil && len(n.Childern) >= 0 {
+		temp += goChildern(n.Childern)
+	}
+
 	for _, v := range n.Childern {
 		temp += goNode(v)
 	}
@@ -38,6 +44,9 @@ func goNode(n *node.NodeXml) string {
 }
 
 func getNameStruct(n *node.NodeXml) string {
+	if (n.Childern == nil || len(n.Childern) <= 0) && (n.Attr == nil || len(n.Attr) <= 0) {
+		return ""
+	}
 	return fmt.Sprintf("\n"+`type %v struct {`, engine.GetCamelCase(n.Namespace)) + "\n\t" +
 		fmt.Sprintf(`XMLName xml.Name %vxml:"%v"%v`+"\n", a, n.Namespace, a)
 }
@@ -51,7 +60,7 @@ func goAttribute(n *node.NodeXml) string {
 		name := fmt.Sprintf("Attr%v", engine.GetCamelCase(v.Name.Local))
 		temp += fmt.Sprintf("\t"+`%v string %vxml:"%v,attr"%v`+"\n", name, a, v.Name.Local, a)
 	}
-	return temp
+	return temp + "}"
 }
 
 func goChildern(listChild []*node.NodeXml) string {
@@ -93,7 +102,7 @@ func getType(n *node.NodeXml, isArray bool) string {
 	if n.Childern == nil && isArray {
 		return "[]string"
 	}
-	if n.Childern == nil && !isArray {
+	if n.Childern == nil && !isArray && (n.Attr == nil || len(n.Attr) <= 0) {
 		return "string"
 	}
 	if isArray {

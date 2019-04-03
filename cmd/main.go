@@ -11,7 +11,6 @@ import (
 func main() {
 	flag.Parse()
 	for _, pathFile := range flag.Args() {
-		fmt.Println(pathFile)
 		file, err := os.Open(pathFile)
 		if err != nil {
 			fmt.Println(err)
@@ -23,8 +22,12 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		fileGo, err := generator.CreateStruct(n)
-		fmt.Println(fileGo)
+		goFile, err := generator.CreateStruct(n)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(goFile)
 	}
 
 }
