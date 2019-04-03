@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"errors"
 	"io"
+	"math"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -22,9 +24,14 @@ const (
 type NodeXml struct {
 	Namespace string
 	Type      NodeType
-	Value     string
+	TypeValue *TypeValue
 	Attr      []xml.Attr
 	Childern  []*NodeXml
+}
+
+type TypeValue struct {
+	Value string
+	Type  string
 }
 
 func Parse(r io.Reader) (*NodeXml, error) {
@@ -88,15 +95,17 @@ func (s *nodeStack) addValue(data xml.CharData) {
 		strings.TrimSpace(value) == "" {
 		return
 	}
+	typ := defineType(value)
 	index := len(s.nodes) - 1
-	s.nodes[index].Value = value
+	s.nodes[index].TypeValue.Value = value
+	s.nodes[index].TypeValue.Type = typ
 }
 
 func newNode(element xml.StartElement) *NodeXml {
 	return &NodeXml{
 		Namespace: element.Name.Local,
 		Type:      ElementNode,
-		Value:     "",
+		TypeValue: &TypeValue{"", ""},
 		Attr:      element.Attr,
 		Childern:  nil,
 	}
@@ -107,4 +116,15 @@ func pop(input []*NodeXml) []*NodeXml {
 		return input
 	}
 	return input[:len(input)-1]
+}
+
+func defineType(charData string) string {
+	i, err := strconv.ParseFloat(charData, 10)
+	if err != nil {
+		return "string"
+	}
+	if i == math.Trunc(i) {
+		return "int64"
+	}
+	return "float64"
 }
