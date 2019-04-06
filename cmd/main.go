@@ -2,32 +2,36 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/cartmanis/go_get_struct/generator"
 	"github.com/cartmanis/go_get_struct/node"
+	"github.com/prometheus/common/log"
 	"os"
+	"path/filepath"
 )
 
 func main() {
 	flag.Parse()
 	for _, pathFile := range flag.Args() {
-		file, err := os.Open(pathFile)
+		absPath, err := filepath.Abs(pathFile)
 		if err != nil {
-			fmt.Println(err)
+			log.Errorf("Не удалось  получить абсолютный путь до файла %v. Ошибка: %v", pathFile, err)
+			return
+		}
+		file, err := os.Open(absPath)
+		if err != nil {
+			log.Errorf("Не удалось открыть файл %v. Ошибка: %v", pathFile, err)
 			return
 		}
 		defer file.Close()
 		n, err := node.Parse(file)
 		if err != nil {
-			fmt.Println(err)
+			log.Errorf("Не удалось распарсить файл %v. Ошибка: %v", pathFile, err)
 			return
 		}
-		goFile, err := generator.CreateStruct(n)
-		if err != nil {
-			fmt.Println(err)
+		if err := generator.CreateStruct(n, absPath); err != nil {
+			log.Errorf("Не удалось получить стуктуру go для файла %v. Ошибка: %v", pathFile, err)
 			return
 		}
-		fmt.Println(goFile)
 	}
 
 }
