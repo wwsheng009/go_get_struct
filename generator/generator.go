@@ -2,11 +2,12 @@ package generator
 
 import (
 	"fmt"
-	"github.com/cartmanis/go_get_struct/engine"
-	"github.com/cartmanis/go_get_struct/node"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/wwsheng009/go_get_struct/engine"
+	"github.com/wwsheng009/go_get_struct/node"
 )
 
 const (
@@ -17,7 +18,7 @@ var mapList = make(map[string]bool, 0)
 
 func CreateStruct(n *node.NodeXml, xmlPath string) error {
 	if len(xmlPath) < 3 {
-		return fmt.Errorf("Не достаточная длинна файла %v. Возможно файл без расширения", filepath.Base(xmlPath))
+		return fmt.Errorf("File %v is not long enough. Possibly a file with no extension", filepath.Base(xmlPath))
 	}
 	goPath := xmlPath[:len(xmlPath)-3] + "go"
 	s := goNode(n)
@@ -31,7 +32,7 @@ func CreateStruct(n *node.NodeXml, xmlPath string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Структура go успешно создана и записана в файл %v", goPath)
+	fmt.Printf("The go structure was successfully created and written to file %v", goPath)
 	return nil
 }
 
