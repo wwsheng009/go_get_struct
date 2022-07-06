@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/wwsheng009/go_get_struct/engine"
-	"github.com/wwsheng009/go_get_struct/node"
+	"go_get_struct/engine"
+	"go_get_struct/node"
 )
 
 const (

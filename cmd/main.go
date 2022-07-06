@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/wwsheng009/go_get_struct/generator"
-	"github.com/wwsheng009/go_get_struct/node"
+	"go_get_struct/generator"
+	"go_get_struct/node"
 )
 
 func main() {
