@@ -56,7 +56,7 @@ func Parse(r io.Reader) (*NodeXml, error) {
 		}
 	}
 	if ns == nil || ns.nodes == nil && len(ns.nodes) == 0 {
-		return nil, errors.New("Не удалось обработать документ. Возможно структура файла не является корректным Xml документом")
+		return nil, errors.New("Failed to process document. Perhaps the file structure is not a valid Xml document")
 	}
 	return ns.nodes[0], nil
 }
@@ -112,14 +112,14 @@ func newNode(element xml.StartElement) *NodeXml {
 }
 
 func pop(input []*NodeXml) []*NodeXml {
-	if input == nil || len(input) == 0 {
+	if len(input) == 0 {
 		return input
 	}
 	return input[:len(input)-1]
 }
 
 func defineType(charData string) string {
-	i, err := strconv.ParseFloat(charData, 10)
+	i, err := strconv.ParseFloat(charData, 64)
 	if err != nil {
 		return "string"
 	}

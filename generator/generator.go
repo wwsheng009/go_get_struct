@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"go_get_struct/engine"
 	"go_get_struct/node"
@@ -18,7 +17,7 @@ var mapList = make(map[string]bool, 0)
 
 func CreateStruct(n *node.NodeXml, xmlPath string) error {
 	if len(xmlPath) < 3 {
-		return fmt.Errorf("File %v is not long enough. Possibly a file with no extension", filepath.Base(xmlPath))
+		return fmt.Errorf("file %s is not long enough. Possibly a file with no extension", filepath.Base(xmlPath))
 	}
 	goPath := xmlPath[:len(xmlPath)-3] + "go"
 	s := goNode(n)
@@ -118,6 +117,7 @@ func isArray(current *node.NodeXml, listChild []*node.NodeXml) bool {
 }
 
 func getType(n *node.NodeXml, isArray bool) string {
+	// caser := cases.Title(language.AmericanEnglish)
 	if n.Childern == nil && isArray {
 		return "[]string"
 	}
@@ -125,7 +125,12 @@ func getType(n *node.NodeXml, isArray bool) string {
 		return "string"
 	}
 	if isArray {
-		return "[]*" + strings.Title(n.Namespace)
+		return "[]*" + engine.GetCamelCase(n.Namespace)
 	}
-	return "*" + strings.Title(n.Namespace)
+	return "*" + engine.GetCamelCase(n.Namespace)
+	// input1 := strings.ReplaceAll(n.Namespace, "-", "_")
+	// if isArray {
+	// 	return "[]*" + caser.String(input1)
+	// }
+	// return "*" + caser.String(input1)
 }
